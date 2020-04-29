@@ -1,0 +1,47 @@
+<head>
+
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js"></script>
+<script type="text/javascript" src="state_path_data.js"></script>
+
+</head>
+
+
+<body>
+
+<svg id="svg" xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 150 3000 1750">
+<g id="state-shapes">
+    <state-shape
+      v-for="state in states"
+      :key="state.id"
+      :state="state"
+      @click.native="focus_state"
+    ></state-shape>
+  </g>
+</svg>
+
+<div id="check-bank">
+  <check-box
+    v-for="check in checks"
+    :key="check.id"
+    :check="check"
+    ></check-box>
+</div>
+
+<div id="rollButton">
+  <button v-on:click="advance">Roll</button>
+</div>
+
+<div id="rollsList">
+  <rolls-table
+  v-for="round in rounds"
+  :key="round.id"
+  :round="round"
+  ></rolls-table>
+</div>
+
+</body>
+
+
+<script type='text/javascript' src='rolling_script.js'></script>
