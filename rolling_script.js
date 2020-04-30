@@ -40,7 +40,6 @@ function full_game() {
       let numberRoll = roll_n(6);
       round.push([color, numberRoll]);
     }
-    return results;
     results.push(round);
   }
   return results;
