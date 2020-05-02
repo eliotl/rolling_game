@@ -77,6 +77,21 @@ text.xBox_2 {
   text-decoration: line-through;
 }
 
+
+div.spacerOne{
+  height: 1em;
+}
+
+.firstRound{
+  min-height: 11em;
+}
+
+
+.laterRound{
+  display: inline-block;
+  float: left;
+}
+
 td.rollCell {
   width: 4em;
   height: 2.472em;
@@ -85,6 +100,7 @@ td.rollCell {
 }
 table, tr {
   border-radius: 5px;
+  padding-right: 12px;
 }
 
 

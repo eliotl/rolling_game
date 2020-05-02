@@ -247,9 +247,9 @@ var checksVue = new Vue({
 });
 
 Vue.component("rolls-table", {
-  props: ["round"],
+  props: ["round", "index"],
   template: `
-  <div>
+  <div :class="classObject">
     <table> {{ round.number}}
       <tr v-for="turn, num in round.turns"
         :key=num>
@@ -257,8 +257,17 @@ Vue.component("rolls-table", {
         <td :class="turn.classes[1]" class="rollCell"> {{ turn.texts[1] }} </td>
       </tr>
     </table>
+    <div v-if="index===0" style="'height:' + (9-3*round.length) + 'em'"/>
   </div>
 `,
+  computed: {
+    classObject: function () {
+      return {
+        firstRound: this.index === 0,
+        laterRound: this.index >= 1,
+      }  
+    }
+  }
   });  
 
 
@@ -267,7 +276,7 @@ var rollsVue = new Vue({
   el: "#rollsList",
   data: {
     rounds: gameTracker,
-  },
+  }
 });   
 
 

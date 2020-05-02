@@ -32,7 +32,7 @@
               {{counterXes}}
             </div>
           </foreignObject>
-          <foreignObject x=150 y=167 width=40 height=100>
+          <foreignObject x=150 y=167 width=40 height=40>
             <div class="emptyBox">
               {{counterEmpties}}
             </div>
@@ -49,22 +49,23 @@
       />
     </div>
 
-    <div style="height: 1em">
+    <div class="spacerOne">
     </div>
 
     <div id="rollButton">
       <button v-on:click="advance">Roll</button>
     </div>
 
-    <div style="height: 1em">
+    <div class="spacerOne">
     </div>
 
 
     <div id="rollsList">
       <rolls-table
-        v-for="round in rounds"
+        v-for="round, index in rounds"
         :key="round.id"
         :round="round"
+        :index="index"
       />
     </div>
 
