@@ -54,6 +54,11 @@ div.xBox {
   text-align: center;
 }
 
+div.emptyBox {
+  font-size: 1.5em;
+  text-align: right;
+}
+
 text.xBox_2 {
   font-size: 2.5em;
 }

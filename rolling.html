@@ -24,12 +24,17 @@
           :num="num"
           v-on:state_input="update_object"
         />
-        <g id="xCountBox">
-          <rect x=2400 y=1500 width=200 height=200 class="xBox"/>
-          <text x=2400 y=1500 class="xBox_2" transform="translate(30,50)"># of Xes</text>
-          <foreignObject x=2400 y=1575 width=200 height=100>
+        <g id="xCountBox" transform="translate(2550, 1550)">
+          <rect x=0 y=0 width=200 height=200 class="xBox"/>
+          <text x=30 y=50 class="xBox_2"># of Xes</text>
+          <foreignObject x=0 y=75 width=200 height=100>
             <div class="xBox">
-              {{counter1}}
+              {{counterXes}} {{countXes}}
+            </div>
+          </foreignObject>
+          <foreignObject x=150 y=167 width=40 height=100>
+            <div class="emptyBox">
+              {{counterEmpties}}
             </div>
           </foreignObject>
         </g>
@@ -44,9 +49,16 @@
       />
     </div>
 
+    <div style="height: 1em">
+    </div>
+
     <div id="rollButton">
       <button v-on:click="advance">Roll</button>
     </div>
+
+    <div style="height: 1em">
+    </div>
+
 
     <div id="rollsList">
       <rolls-table

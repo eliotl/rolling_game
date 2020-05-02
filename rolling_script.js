@@ -92,6 +92,8 @@ function focus_id(id){
     inp.select();    
 }
 
+/* Setup on pageload */
+
 set_random_seed();
 
 const gameResults = full_game();
@@ -105,11 +107,8 @@ var fiftyArray = new Array(50).fill('')
 var stateObj = {}
 
 
+/* Vue stuff */
 
-
-/*  rollCounter etc. could be in here as opposed to global objects 
-  since that's the point of Vue?
-  */
 var buttonVue = new Vue({
   el:"#rollButton",
   methods: {
@@ -160,7 +159,8 @@ var statesVue = new Vue({
   el: "#state-shapes",
   data: {
     states: statesData,
-    counter1: 0,
+    counterXes: 0,
+    counterEmpties: 50,
     inputArray: new Array(50).fill(''),
     bigStateObject: {},
   },
@@ -174,33 +174,26 @@ var statesVue = new Vue({
       }
       return numOfXes;    
     },
-    x_count_2: function () {
-      let counter = 0;
-      for (let value of fiftyArray){
-        if (value.toLowerCase() === "x"){
-          counter +=1;
-        }
-        return counter;      
-      }
-    },
   },
   methods: {
-    count_xes: function(){
+    count_set_xes: function(){
       var numOfXes = 0;
+      var numOfEmpties = 50;
       let valuesArray = Object.values(this.bigStateObject)
       for(let value of valuesArray){
         if(value.toLowerCase() === "x"){
-          console.log(['num', numOfXes]);
            numOfXes += 1;
         }
+        if (value !== ""){
+            numOfEmpties -= 1;
+        }
       }
-      this.counter1 = numOfXes;
-      console.log(numOfXes);
-      return numOfXes;    
+      this.counterXes = numOfXes;
+      this.counterEmpties = numOfEmpties; 
       },
     update_object: function(state, value) {
       this.bigStateObject[state] = value;
-      this.count_xes();
+      this.count_set_xes();
     }
   }
 });
@@ -229,9 +222,10 @@ Vue.component("check-box", {
     },    
   },
   template: `
-  <div class="checkDiv" :id="check.id" :title="check.help" :count="countChecks">
+  <div class="checkDiv" :id="check.id" :count="countChecks">
       <label :style="'opacity:' + 100 / Math.sqrt(countChecks + 1) + '%'">
-      <span  :class="classObject">{{check.label}}</span>:</label>
+        <span  :class="classObject">{{check.label}}</span>:
+      </label>
       <input type="checkbox" value="true" v-model="checkList[0]"></input>
       <input type="checkbox" value="true" v-model="checkList[1]"></input>
       <input type="checkbox" value="true" v-model="checkList[2]"></input>
