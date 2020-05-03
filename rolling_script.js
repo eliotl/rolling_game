@@ -122,7 +122,6 @@ Vue.component("state-shape", {
   props: {
     state: Object,
     clambake: String,
-    num: Number
   },
   data: function () {
     return {
@@ -159,6 +158,7 @@ var statesVue = new Vue({
   el: "#state-shapes",
   data: {
     states: statesData,
+    neighborGraph: statesGraph,
     counterXes: 0,
     counterEmpties: 50,
     inputArray: new Array(50).fill(''),
@@ -194,8 +194,18 @@ var statesVue = new Vue({
     update_object: function(state, value) {
       this.bigStateObject[state] = value;
       this.count_set_xes();
+    },
+    fill_states: function(statesList, fill="x"){
+        for (let child of this.$children){
+            if (statesList.includes(child.state.id)){
+                child.myVal = fill;
+            }
+            else {
+                child.myVal = "";
+            }
+        }
     }
-  }
+  },
 });
 
 Vue.component("check-box", {
@@ -246,6 +256,40 @@ var checksVue = new Vue({
   }
 });
 
+Vue.component("color-pattern", {
+        // props: ["strokecolor", "fillcolor", "colorid"],
+        props: ['color'],
+        template: 
+        `
+        <pattern :id="color.id_" width="15" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <rect v-if="false" x="0" y="0" width="15" height="10" :style="'fill:' + color.fill"/> 
+          <line x1="0" y1="0" x2="0" y2="10" :style="'stroke:' + color.stroke + '; stroke-width:5'" />
+        </pattern>        
+        `,
+        /*
+        `
+        <pattern :id="colorid" width="15" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <rect x="0" y="0" width="15" height="10" :style="'fill:' + fillcolor"/> 
+          <line x1="0" y1="0" x2="0" y2="10" :style="'stroke:' + strokecolor + '; stroke-width:5'" />
+        </pattern>
+        `,*/
+    });
+
+var rollsVue = new Vue({
+  el: "#svgPatterns",
+  data: {
+    colorObjs: [
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangePattern'},
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowPattern'},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purplePattern'},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redPattern'},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenPattern'},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'bluePattern'}
+    ],
+  }
+});
+
+
 Vue.component("rolls-table", {
   props: ["round", "index"],
   template: `
@@ -277,7 +321,31 @@ var rollsVue = new Vue({
   data: {
     rounds: gameTracker,
   }
-});   
+});
+
+/* 
+function delay(key) {
+    console.log(key);
+    console.log(statesGraph[key]);
+    statesVue.fill_states(statesGraph[key]);
+    i++;
+}
 
 
+for (const key in statesGraph){
+    delay(key);
+}
 
+*/
+
+
+/*
+    setTimeout(function () {
+    console.log(key);
+    console.log(statesGraph[key]);
+    statesVue.fill_states(statesGraph[key])
+    }, 20000
+    )
+}
+
+*/

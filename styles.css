@@ -47,7 +47,7 @@ stroke-width: 8px;
 
 rect.xBox {
   stroke: black;
-  fill: white;
+  fill: url("#orangePattern");
 }
 div.xBox {
   font-size: 4em;
@@ -90,6 +90,8 @@ div.spacerOne{
 .laterRound{
   display: inline-block;
   float: left;
+  opacity: 80%;
+  /* filter: saturate(75%); */
 }
 
 td.rollCell {
@@ -108,7 +110,7 @@ input[type=text] {
   border-width: 0px;
   text-align: center;
   font-size: 4em;
-  min-width: 80px;
+  min-width: 85px;
   min-height: 80px;
   max-width: 100px;
 }

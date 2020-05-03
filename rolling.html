@@ -15,15 +15,23 @@
       height="600"
       viewBox="0 150 3000 1750"
     >
+    <g id="svgPatterns">
+      <color-pattern
+        v-for="color in colorObjs"
+        :key="color.id_"
+        :color="color"
+      />
+    </g>
+
       <g id="state-shapes">
         <state-shape
-          v-for="state, num in states"
+          v-for="state in states"
           :key="state.id"
           :state="state"
           :ref="state.id"
-          :num="num"
           v-on:state_input="update_object"
         />
+
         <g id="xCountBox" transform="translate(2550, 1550)">
           <rect x=0 y=0 width=200 height=200 class="xBox"/>
           <text x=30 y=50 class="xBox_2"># of Xes</text>
