@@ -18,9 +18,21 @@
     <g id="svgPatterns">
       <color-pattern
         v-for="color in colorObjs"
+        :id="color.id_"
         :key="color.id_"
         :color="color"
+        :cross="true"
+        :background="true"
       />
+      <color-pattern
+        v-for="color in colorObjs"
+        :id="color.half_id"
+        :key="color.half_id"
+        :color="color"
+        :cross="false"
+        :background="true"
+      />
+
     </g>
 
       <g id="state-shapes">
@@ -57,15 +69,13 @@
       />
     </div>
 
-    <div class="spacerOne">
-    </div>
+    <div class="spacerOne"/>
 
     <div id="rollButton">
       <button v-on:click="advance">Roll</button>
     </div>
 
-    <div class="spacerOne">
-    </div>
+    <div class="spacerOne"/>
 
 
     <div id="rollsList">

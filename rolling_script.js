@@ -125,9 +125,9 @@ Vue.component("state-shape", {
   },
   data: function () {
     return {
-      stateObj_: stateObj,
-      arr: fiftyArray,
-      myVal: ""
+      myVal: "",
+      validNumbers: [1,2,3,4,5,6],
+      x_alert: false
     }
   },
   methods: {
@@ -139,20 +139,39 @@ Vue.component("state-shape", {
     is_x: function() {
       return this.myVal.toLowerCase() === "x";
     },
+    alert_style: function() {
+        if (this.myVal.toLowerCase() === "x" || this.validNumbers.length === 0){
+            return "fill:url(#" + this.state.alert_style + ")";
+        }
+        else if (this.validNumbers.length === 1 && this.myVal === ""){
+            return "fill:url(#" + this.state.alert_style + "_half)";   
+        }
+        else {
+            return "";
+        }
+    },
   },
   template: `
   <g class="state-shape" v-on:click="focus_me">
-      <title> {{state.id.replace("_"," ")}} </title>
-      <rect v-if="state.height" :id="state.id" :class="state.class" :x="state.x" :y="state.y" :width="state.width" :height="state.height"/>
-      <path v-else :id="state.id" :class="state.class" :d="state.d"/>
+      <title> {{state.id.replace("_"," ")}} &#10; {{validNumbers.join(" ")}} </title>
+      <rect v-if="state.height" :id="state.id" :class="state.class" :style="alert_style" :x="state.x" :y="state.y" :width="state.width" :height="state.height"/>
+      <path v-else :id="state.id" :class="state.class" :style="alert_style" :d="state.d"/>
         <foreignObject :x="state.box_x + 8" :y="state.box_y + 8" :width="state.box_width" :height="state.box_height"> 
         <div xmlns="http://www.w3.org/1999/xhtml">
-          <input :id="state.box_id" :class="state.class" type="text" v-model="myVal" @input="$emit('state_input', state.id, $event.target.value)"></input>
+          <input :id="state.box_id" type="text" v-model="myVal" @input="$emit('state_input', state.id, $event.target.value)"></input>
         </div>
         </foreignObject>
     </g>
 `,
 });
+
+/* 
+      <g v-if="x_alert">
+      <rect v-if="state.height" :id="state.id + '_alert'" :class="state.class" :style="'url(#' + state.x_alert_class" :x="state.x" :y="state.y" :width="state.width" :height="state.height"/>
+      <path v-else :id="state.id + '_alert'" :class="state.class" :style="'url(#' + state.x_alert_class" :d="state.d"/>
+      </g>
+
+*/
 
 var statesVue = new Vue({
   el: "#state-shapes",
@@ -176,6 +195,11 @@ var statesVue = new Vue({
     },
   },
   methods: {
+    update_object: function(state, value) {
+      this.bigStateObject[state] = value;
+      this.count_set_xes();
+      this.set_valid_options();
+    },    
     count_set_xes: function(){
       var numOfXes = 0;
       var numOfEmpties = 50;
@@ -191,9 +215,56 @@ var statesVue = new Vue({
       this.counterXes = numOfXes;
       this.counterEmpties = numOfEmpties; 
       },
-    update_object: function(state, value) {
-      this.bigStateObject[state] = value;
-      this.count_set_xes();
+      _child_array: function(states){
+        // Should be a set
+        const targetStates = [];
+        for (let child of this.$children){
+            if (states.includes(child.state.id)){
+                targetStates.push(child)
+            }
+        }
+        return targetStates;
+      },
+    get_valid_options: function(state){
+      let validOptions = [];
+      let targetState = this._child_array([state])[0];
+      let targetVal = targetState.myVal;
+      if (targetVal.toLowerCase() === "x"){
+        return [];
+      }
+      if (! isNaN(targetVal) && targetVal !== ""){
+        return [targetVal];
+      }
+      let naybs = this.neighborGraph[state];
+      let states = this._child_array(naybs);
+      let minVal = 7;
+      let maxVal = -1;
+      for (let naybState of states){
+        let value = naybState.myVal;
+        if (! isNaN(value) && value !== ""){
+            value = Number(value);
+            minVal = Math.min(minVal, value);
+            maxVal = Math.max(maxVal, value);
+        }
+      }
+      if (minVal === 7){
+        validOptions = [1,2,3,4,5,6];
+      }
+      else{
+        for (let num of [1,2,3,4,5,6]){
+          if (Math.abs(num-minVal) <= 1 && Math.abs(num-maxVal) <= 1){
+              validOptions.push(num);
+          }
+        }
+      }
+      return validOptions;
+    },
+    set_valid_options: function(){
+      for (let child of this.$children){
+        let state = child.state.id;
+        let options = this.get_valid_options(state);
+        child.validNumbers = options;
+      }
     },
     fill_states: function(statesList, fill="x"){
         for (let child of this.$children){
@@ -257,34 +328,27 @@ var checksVue = new Vue({
 });
 
 Vue.component("color-pattern", {
-        // props: ["strokecolor", "fillcolor", "colorid"],
-        props: ['color'],
+        props: ['color', 'background', 'cross'],
         template: 
         `
-        <pattern :id="color.id_" width="15" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-          <rect v-if="false" x="0" y="0" width="15" height="10" :style="'fill:' + color.fill"/> 
-          <line x1="0" y1="0" x2="0" y2="10" :style="'stroke:' + color.stroke + '; stroke-width:5'" />
+        <pattern width="40" height="40" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <rect v-if="background" x="0" y="0" width="50" height="50" :style="'fill:' + color.fill"/> 
+          <line x1="0" y1="0" x2="0" y2="50" :style="'stroke:' + color.stroke + '; stroke-width:5'"/>
+          <line v-if="cross" x1="0" y1="25" x2="50" y2="25" :style="'stroke:' + color.stroke + '; stroke-width:3'"/>
         </pattern>        
         `,
-        /*
-        `
-        <pattern :id="colorid" width="15" height="10" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-          <rect x="0" y="0" width="15" height="10" :style="'fill:' + fillcolor"/> 
-          <line x1="0" y1="0" x2="0" y2="10" :style="'stroke:' + strokecolor + '; stroke-width:5'" />
-        </pattern>
-        `,*/
     });
 
 var rollsVue = new Vue({
   el: "#svgPatterns",
   data: {
     colorObjs: [
-        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangePattern'},
-        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowPattern'},
-        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purplePattern'},
-        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redPattern'},
-        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenPattern'},
-        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'bluePattern'}
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangePattern', half_id: 'orangePattern_half'},
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowPattern', half_id: 'yellowPattern_half'},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purplePattern', half_id: 'purplePattern_half'},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redPattern', half_id: 'redPattern_half'},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenPattern', half_id: 'greenPattern_half'},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'bluePattern', half_id: 'bluePattern_half'}
     ],
   }
 });
@@ -323,29 +387,3 @@ var rollsVue = new Vue({
   }
 });
 
-/* 
-function delay(key) {
-    console.log(key);
-    console.log(statesGraph[key]);
-    statesVue.fill_states(statesGraph[key]);
-    i++;
-}
-
-
-for (const key in statesGraph){
-    delay(key);
-}
-
-*/
-
-
-/*
-    setTimeout(function () {
-    console.log(key);
-    console.log(statesGraph[key]);
-    statesVue.fill_states(statesGraph[key])
-    }, 20000
-    )
-}
-
-*/

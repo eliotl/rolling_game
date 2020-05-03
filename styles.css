@@ -47,7 +47,7 @@ stroke-width: 8px;
 
 rect.xBox {
   stroke: black;
-  fill: url("#orangePattern");
+  fill: white;
 }
 div.xBox {
   font-size: 4em;
@@ -109,6 +109,7 @@ table, tr {
 input[type=text] {
   border-width: 0px;
   text-align: center;
+  background: transparent;
   font-size: 4em;
   min-width: 85px;
   min-height: 80px;
