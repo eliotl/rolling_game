@@ -21,17 +21,32 @@
         :id="color.id_"
         :key="color.id_"
         :color="color"
+        :diagonal="true"
         :cross="true"
-        :background="true"
+        :flat="false"
+        :stroke="color.stroke"
       />
       <color-pattern
         v-for="color in colorObjs"
         :id="color.half_id"
         :key="color.half_id"
         :color="color"
+        :diagonal="true"
         :cross="false"
-        :background="true"
+        :flat="false"
+        :stroke="color.stroke"
       />
+      <color-pattern
+        v-for="color in colorObjs"
+        :id="color.flat_id"
+        :key="color.flat_id"
+        :color="color"
+        :diagonal="true"
+        :cross="true"
+        :flat="true"
+        :stroke="invert_hex(color.stroke)"
+      />
+
 
     </g>
 
