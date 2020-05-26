@@ -92,6 +92,21 @@ function focus_id(id){
     inp.select();    
 }
 
+// from GitHub
+function invertHex(hex) {
+    if (hex[0] === "#"){
+        var myHex = hex.slice(1)
+    }
+    else{
+        var myHex = hex;
+    }
+    let invertedHex = (Number(`0x1${myHex}`) ^ 0xFFFFFF).toString(16).substr(1).toUpperCase()
+    if (hex[0] === "#"){
+        invertedHex = "#" + invertedHex;
+    }
+    return invertedHex;
+}
+
 /* Setup on pageload */
 
 set_random_seed();
@@ -121,13 +136,12 @@ var buttonVue = new Vue({
 Vue.component("state-shape", {
   props: {
     state: Object,
-    clambake: String,
   },
   data: function () {
     return {
       myVal: "",
       validNumbers: [1,2,3,4,5,6],
-      x_alert: false
+      invalidNumber: false
     }
   },
   methods: {
@@ -140,7 +154,11 @@ Vue.component("state-shape", {
       return this.myVal.toLowerCase() === "x";
     },
     alert_style: function() {
-        if (this.myVal.toLowerCase() === "x" || this.validNumbers.length === 0){
+        // if (this.myVal.toLowerCase() === "x" || this.validNumbers.length === 0 || this.myVal.length > 1 && this.myVal[0] === "["){
+        if (this.invalidNumber === true){
+            return "fill:url(#" + this.state.alert_style + "_flat)";
+        }
+        else if (this.validNumbers.length === 0){
             return "fill:url(#" + this.state.alert_style + ")";
         }
         else if (this.validNumbers.length === 1 && this.myVal === ""){
@@ -182,17 +200,7 @@ var statesVue = new Vue({
     counterEmpties: 50,
     inputArray: new Array(50).fill(''),
     bigStateObject: {},
-  },
-  computed: {
-    countXes: function(){
-      var numOfXes = 0;
-      for(let child of this.$children){
-        if(child.myVal.toLowerCase() === "x"){
-           numOfXes = numOfXes + 1;
-        }
-      }
-      return numOfXes;    
-    },
+    counters: {},
   },
   methods: {
     update_object: function(state, value) {
@@ -226,14 +234,16 @@ var statesVue = new Vue({
         return targetStates;
       },
     get_valid_options: function(state){
-      let validOptions = [];
+      var validOptions = [];
+      // var INVALID_FLAG = false;
       let targetState = this._child_array([state])[0];
+      targetState.invalidNumber = false;
       let targetVal = targetState.myVal;
       if (targetVal.toLowerCase() === "x"){
         return [];
       }
-      if (! isNaN(targetVal) && targetVal !== ""){
-        return [targetVal];
+      if (targetVal.includes("[") && targetVal.includes("]")){
+        return [];
       }
       let naybs = this.neighborGraph[state];
       let states = this._child_array(naybs);
@@ -248,23 +258,50 @@ var statesVue = new Vue({
         }
       }
       if (minVal === 7){
-        validOptions = [1,2,3,4,5,6];
+        var validOptions = [1,2,3,4,5,6];
       }
       else{
         for (let num of [1,2,3,4,5,6]){
           if (Math.abs(num-minVal) <= 1 && Math.abs(num-maxVal) <= 1){
               validOptions.push(num);
           }
+          else if ((! isNaN(targetVal)) && targetVal !== "" && Number(targetVal)===num){
+            targetState.invalidNumber = true;
+            // INVALID_FLAG = true;
+          }
         }
       }
-      return validOptions;
+      if (! isNaN(targetVal) && targetVal !== "" && targetState.invalidNumber === false)
+      {return [targetVal];}
+      else {return validOptions;}
     },
     set_valid_options: function(){
+      let counters = {};
       for (let child of this.$children){
         let state = child.state.id;
+        let color = child.state.class;
         let options = this.get_valid_options(state);
         child.validNumbers = options;
+        // debugger;
+        if (color in counters){
+            for (let option of options){
+                if (option in counters[color]){
+                    counters[color][option] += 1;
+                }
+                else{
+                    counters[color][option] = 1;
+                }
+            }
+        }
+        else {
+            counters[color] = {}
+            for (let option of options){
+                counters[color][option]=1;
+            }
+        } 
       }
+      // console.log(counters);
+      this.counters = counters;
     },
     fill_states: function(statesList, fill="x"){
         for (let child of this.$children){
@@ -328,14 +365,27 @@ var checksVue = new Vue({
 });
 
 Vue.component("color-pattern", {
-        props: ['color', 'background', 'cross'],
+        props: ['color', 'cross', 'flat', 'diagonal', 'stroke'],
+        computed: {
+            transform_rotate: function() {
+                if (this.flat){
+                    return "";
+                }
+                else{
+                    return "rotate(45 0 0)"
+                }
+            }
+        },
+        methods: {
+            // invr
+        },
         template: 
         `
-        <pattern width="40" height="40" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
-          <rect v-if="background" x="0" y="0" width="50" height="50" :style="'fill:' + color.fill"/> 
-          <line x1="0" y1="0" x2="0" y2="50" :style="'stroke:' + color.stroke + '; stroke-width:5'"/>
-          <line v-if="cross" x1="0" y1="25" x2="50" y2="25" :style="'stroke:' + color.stroke + '; stroke-width:3'"/>
-        </pattern>        
+        <pattern width="40" height="40" :patternTransform="transform_rotate" patternUnits="userSpaceOnUse">
+          <rect x="0" y="0" width="50" height="50" :style="'fill:' + color.fill"/> 
+          <line v-if="diagonal" x1="0" y1="0" x2="0" y2="50" :style="'stroke:' + stroke + '; stroke-width:5'"/>
+          <line v-if="cross" x1="0" y1="25" x2="50" y2="25" :style="'stroke:' + stroke + '; stroke-width:3'"/>
+        </pattern>
         `,
     });
 
@@ -343,16 +393,36 @@ var rollsVue = new Vue({
   el: "#svgPatterns",
   data: {
     colorObjs: [
-        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangePattern', half_id: 'orangePattern_half'},
-        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowPattern', half_id: 'yellowPattern_half'},
-        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purplePattern', half_id: 'purplePattern_half'},
-        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redPattern', half_id: 'redPattern_half'},
-        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenPattern', half_id: 'greenPattern_half'},
-        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'bluePattern', half_id: 'bluePattern_half'}
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangePattern', half_id: 'orangePattern_half', flat_id: 'orangePattern_flat'},
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowPattern', half_id: 'yellowPattern_half', flat_id: 'yellowPattern_flat'},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purplePattern', half_id: 'purplePattern_half', flat_id: 'purplePattern_flat'},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redPattern', half_id: 'redPattern_half', flat_id: 'redPattern_flat'},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenPattern', half_id: 'greenPattern_half', flat_id: 'greenPattern_flat'},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'bluePattern', half_id: 'bluePattern_half', flat_id: 'bluePattern_flat'}
     ],
+  },
+  methods: {
+    invert_hex: function(hex) {
+        let invert = invertHex(hex);
+        return invert;
+    }
   }
 });
 
+
+/* 
+    Another component called colorBoxes or something
+
+    That just renders a little thing
+    based on what numbers are in the Counter
+        & you can hover for the full info
+
+
+        <text x="20" y="1000" font-size="4.4em" class="oranges" font-family="Helvetica"> <tspan font-weight="700"> 1 2 </tspan> <tspan font-weight="400"> 3 4 </tspan> <tspan font-weight="200"> 5 </tspan> </text>
+        <text x="600" y="1700" font-size="4.4em" class="greens"> <tspan font-weight="bold"> 1 2 3 4 5 6</tspan>   </text>
+        <text x="1200" y="400" font-size="4.4em" class="blues" font-family="Helvetica"> <tspan font-weight="700"> 1 2 </tspan> <tspan font-weight="400"> 3 4 </tspan> <tspan font-weight="200"> 5 </tspan> </text>
+        
+*/
 
 Vue.component("rolls-table", {
   props: ["round", "index"],
