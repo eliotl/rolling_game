@@ -59,7 +59,7 @@ var statesData =  {
     Tennessee: {id:'Tennessee', class: "yellows", alert_style: "yellowPattern", x: 1586.107,    y: 1237.66, height: 106.15 , width: 457.613,     
                     box_id: "Tennessee_box",   box_x: 1733,    box_y: 1239   , box_width: 134, box_height: 96,      
                     adjusted_input_x: 1739,     adjusted_input_y: 1174},
-    Kentucky: {id: "Kentucky",  class: "yellows", alert_style: "yellowPattern", d: "M 1960 1029.186 L 1960 1238 L 1585.763 1238 L 1585.763 1132.149 L 1744.087 1132.149 L 1744.087 1029.186",
+    Kentucky: {id: "Kentucky",  class: "yellows", alert_style: "yellowPattern", d: "M 1960 1029.186 L 1960 1238 L 1585.763 1238 L 1585.763 1132.149 L 1744.087 1132.149 L 1744.087 1029.186 L 1964 1029.186",
                     box_id: "Kentucky_box",   box_x: 1778.89, box_y: 1065.92, box_width: 85,  box_height: 80, adjusted_input_x: 1784.89, adjusted_input_y: 1000.92 },
     Missouri: {id: "Missouri",  class: "yellows", alert_style: "yellowPattern", d: "M 1410.987 1002 L 1585.99 1002 L 1585.99 1298.01 L 1410.987 1298.01 L 1410.987 1002 Z",  
                     box_id: "Missouri_box",   box_x: 1429.89, box_y: 1091.92, box_width: 85,  box_height: 80, adjusted_input_x: 1435.89, adjusted_input_y: 1026.92 },            

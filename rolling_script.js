@@ -200,6 +200,7 @@ var statesVue = new Vue({
     counterEmpties: 50,
     inputArray: new Array(50).fill(''),
     bigStateObject: {},
+    counters: {},
   },
   methods: {
     update_object: function(state, value) {
@@ -275,29 +276,32 @@ var statesVue = new Vue({
       else {return validOptions;}
     },
     set_valid_options: function(){
-      let counter = {};
+      let counters = {};
       for (let child of this.$children){
         let state = child.state.id;
         let color = child.state.class;
         let options = this.get_valid_options(state);
-        if (color in counter){
+        child.validNumbers = options;
+        // debugger;
+        if (color in counters){
             for (let option of options){
-                if (option in counter[color]){
-                    counter[color] += 1;
+                if (option in counters[color]){
+                    counters[color][option] += 1;
                 }
                 else{
-                    counter[color] = 1;
+                    counters[color][option] = 1;
                 }
             }
         }
         else {
-            counter[color] = {}
+            counters[color] = {}
             for (let option of options){
-                counter[color][option]=1;
+                counters[color][option]=1;
             }
-        }
-        child.validNumbers = options;
+        } 
       }
+      // console.log(counters);
+      this.counters = counters;
     },
     fill_states: function(statesList, fill="x"){
         for (let child of this.$children){
@@ -360,6 +364,93 @@ var checksVue = new Vue({
   }
 });
 
+// The wheel is one component ... by color
+// The trapezoid is one component ... by number
+
+/*
+Vue.component("numberWheel", {
+    template: `
+<g id="numberWheel" style="transform: scale(0.4) translate(3200px, 300px);">
+  <g id="innerTrapezoids">
+    <path id="Inner_1" class="cls-1" d="M102,711l168.31-27.863L290,549,134,480Z"/>
+    <path id="Inner_2" class="cls-1" d="M133.5,482.173L290,551l88-102L281.989,303.191Z"/>
+    <path id="Inner_3" class="cls-1" d="M282,304l95,146,128-38V238Z"/>
+    <path id="Inner_4" class="cls-1" d="M727,304L632,450,504,412V238Z"/>
+    <path id="Inner_5" class="cls-1" d="M875.505,481.173L719,550,631,448l96.011-145.809Z"/>
+    <path id="Inner_6" class="cls-1" d="M908,711L739.69,683.137,719,548l156-68Z"/>
+  </g>
+  <g id="outerTrapezoids">
+    <path id="Outer_1" class="cls-1" d="M104,711l32-230L75,454,34.456,721.534Z"/>
+    <path id="Outer_2" class="cls-1" d="M134.882,482.447L283.1,304.852,250,252,74,455Z"/>
+    <path id="Outer_3" class="cls-1" d="M283,305l222-65V178L248,253Z"/>
+    <path id="Outer_4" class="cls-1" d="M726,305L504,240V178l257,75Z"/>
+    <path id="Outer_5" class="cls-1" d="M875.118,482.447L725,304l35-52L936,455Z"/>
+    <path id="Outer_6" class="cls-1" d="M906,711L873,481l62-27,40.544,267.534Z"/>
+  </g>
+  <g id="wheelNumbers">
+    <text id="Number_1" class="cls-2" transform="translate(196.945 624.883) scale(1.37 1.367)"><tspan x="0">1</tspan></text>
+    <text id="Number_2" class="cls-2" transform="translate(270.457 464.374) scale(1.37 1.367)"><tspan x="0">2</tspan></text>
+    <text id="Number_3" class="cls-2" transform="translate(417.629 370.356) scale(1.37 1.367)"><tspan x="0">3</tspan></text>
+    <text id="Number_4" class="cls-2" transform="matrix(1.369, -0.045, 0.045, 1.367, 595.324, 365.937)"><tspan x="0">4</tspan>  </text>
+    <text id="Number_5" class="cls-2" transform="matrix(1.369, -0.031, 0.031, 1.367, 739.68, 462.015)"><tspan x="0">5</tspan> </text>
+    <text id="Number_6" class="cls-2" transform="matrix(1.369, -0.03, 0.029, 1.367, 812.074, 619.324)"><tspan x="0">6</tspan></text>
+  </g>
+    </g>
+    `
+    )
+}
+
+Vue.component("wheel_number", {
+    template: `
+    <g :id="{{color}} + '_numberWheel_' + {{n}}" :style="'transform: scale(0.4) translate(' + {{xOffset}} + '}, ' + {{yOffset}} + 'px);'">
+        <path id="{{color}} + '_inner_' + {{n}}'" :class={{color}} :d={{innerPath}} />
+        <path id="{{color}} + '_outer_' + {{n}}'" :class={{color}} :d={{innerPath}} />
+        <text id="{{color}} + '_number_' + {{n}}'" class="wheelNumber" :x={{numberX}} :y={{numberY}}><tspan>{{number}}</tspan></text>
+    </g>
+    `
+    )
+}
+
+var wheelVue = new Vue({
+  el: "#numberWheels",
+  data: {
+    wheelColors: [
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color="oranges", xOffset=10, yOffset=2500}
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color="yellow", xOffset=1700, yOffset=1500},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color="purples", xOffset=2700, yOffset=600},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color="reds", xOffset=2500, yOffset=1200},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color="greens", xOffset=1000, yOffset=1400},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color="blues", xOffset=3200, yOffset=300},
+    ],
+    innerPaths: [
+        "M102,711l168.31-27.863L290,549,134,480Z",
+        "M133.5,482.173L290,551l88-102L281.989,303.191Z",
+        "M282,304l95,146,128-38V238Z",
+        "M727,304L632,450,504,412V238Z",
+        "M875.505,481.173L719,550,631,448l96.011-145.809Z",
+        "M908,711L739.69,683.137,719,548l156-68Z",
+    ]
+    outerPaths: [
+        "M104,711l32-230L75,454,34.456,721.534Z",
+        "M134.882,482.447L283.1,304.852,250,252,74,455Z",
+        "M283,305l222-65V178L248,253Z",
+        "M726,305L504,240V178l257,75Z",
+        "M875.118,482.447L725,304l35-52L936,455Z",
+        "M906,711L873,481l62-27,40.544,267.534Z",
+    ]
+  },
+  methods: {
+    invert_hex: function(hex) {
+        let invert = invertHex(hex);
+        return invert;
+    }
+  }
+});
+
+
+*/
+
+
 Vue.component("color-pattern", {
         props: ['color', 'cross', 'flat', 'diagonal', 'stroke'],
         computed: {
@@ -405,6 +496,20 @@ var rollsVue = new Vue({
   }
 });
 
+
+/* 
+    Another component called colorBoxes or something
+
+    That just renders a little thing
+    based on what numbers are in the Counter
+        & you can hover for the full info
+
+
+        <text x="20" y="1000" font-size="4.4em" class="oranges" font-family="Helvetica"> <tspan font-weight="700"> 1 2 </tspan> <tspan font-weight="400"> 3 4 </tspan> <tspan font-weight="200"> 5 </tspan> </text>
+        <text x="600" y="1700" font-size="4.4em" class="greens"> <tspan font-weight="bold"> 1 2 3 4 5 6</tspan>   </text>
+        <text x="1200" y="400" font-size="4.4em" class="blues" font-family="Helvetica"> <tspan font-weight="700"> 1 2 </tspan> <tspan font-weight="400"> 3 4 </tspan> <tspan font-weight="200"> 5 </tspan> </text>
+        
+*/
 
 Vue.component("rolls-table", {
   props: ["round", "index"],

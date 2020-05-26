@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="Arch_1_copy" data-name="Arch 1 copy" width="537.51" height="415.51" viewBox="0 0 537.51 415.51">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #acffd6;
+        stroke: #0a6525;
+        stroke-width: 1.51px;
+        fill-rule: evenodd;
+      }
+      .cls-2 {
+        font-size: 36px;
+        fill: black;
+        text-anchor: middle;
+        font-family: Helvetica;
+      }
+    </style>
+  </defs>
+  <path class="Shape_4" d="M494,269V172L302,248l72,69Z" transform="translate(-224.245 -171.245)"/>
+  <path class="Shape_5" d="M376,316L321,429l-96-11,78-171Z" transform="translate(-224.245 -171.245)"/>
+  <path class="Shape_6" d="M225,585l96,1V428l-96-11V585Z" transform="translate(-224.245 -171.245)"/>
+  <path id="Shape_1" data-name="Shape 1 copy 2" class="cls-1" d="M492,269V172l192,76-72,69Z" transform="translate(-224.245 -171.245)"/>
+  <path id="Shape_2" data-name="Shape 2 copy 2" class="cls-1" d="M610,316l55,113,96-11L683,247Z" transform="translate(-224.245 -171.245)"/>
+  <path id="Shape_3" data-name="Shape 4 copy" class="cls-1" d="M761,585l-96,1V428l96-11V585Z" transform="translate(-224.245 -171.245)"/>
+
+  <g transform="translate(70,80)">
+  <text id="_1_copy" data-name="1 copy" class="cls-2" x="12.517" y="105.316">1</text>
+  <text id="_1_copy_2" data-name="1 copy 2" class="cls-2" x="114.517" y="-0.683">1</text>
+  <text id="_1_copy_3" data-name="1 copy 3" class="cls-2" x="270.517" y="-0.683">1</text>
+  <text id="_1_copy_4" data-name="1 copy 4" class="cls-2" x="392.517" y="108.317">1</text>
+  <text id="_1_copy_5" data-name="1 copy 5" class="cls-2" x="419.517" y="264.316">1</text>
+  <text id="_1" data-name="1" class="cls-2" x="-23.483" y="257.317">1</text>
+  </g>
+
+
+
+</svg>
