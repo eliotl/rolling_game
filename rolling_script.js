@@ -368,6 +368,7 @@ var checksVue = new Vue({
 // The trapezoid is one component ... by number
 
 /*
+
 Vue.component("numberWheel", {
     template: `
 <g id="numberWheel" style="transform: scale(0.4) translate(3200px, 300px);">
@@ -411,16 +412,22 @@ Vue.component("wheel_number", {
     )
 }
 
+
+
+
+*/
+
+
 var wheelVue = new Vue({
   el: "#numberWheels",
   data: {
     wheelColors: [
-        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color="oranges", xOffset=10, yOffset=2500}
-        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color="yellow", xOffset=1700, yOffset=1500},
-        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color="purples", xOffset=2700, yOffset=600},
-        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color="reds", xOffset=2500, yOffset=1200},
-        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color="greens", xOffset=1000, yOffset=1400},
-        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color="blues", xOffset=3200, yOffset=300},
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color: "oranges", xOffset: 10, yOffset: 2500},
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color: "yellow", xOffset: 1700, yOffset: 1500},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color: "purples", xOffset: 2700, yOffset: 600},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color: "reds", xOffset: 2500, yOffset: 1200},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color: "greens", xOffset: 1000, yOffset: 1400},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color: "blues", xOffset: 3200, yOffset: 300},
     ],
     innerPaths: [
         "M102,711l168.31-27.863L290,549,134,480Z",
@@ -429,7 +436,7 @@ var wheelVue = new Vue({
         "M727,304L632,450,504,412V238Z",
         "M875.505,481.173L719,550,631,448l96.011-145.809Z",
         "M908,711L739.69,683.137,719,548l156-68Z",
-    ]
+    ],
     outerPaths: [
         "M104,711l32-230L75,454,34.456,721.534Z",
         "M134.882,482.447L283.1,304.852,250,252,74,455Z",
@@ -439,16 +446,7 @@ var wheelVue = new Vue({
         "M906,711L873,481l62-27,40.544,267.534Z",
     ]
   },
-  methods: {
-    invert_hex: function(hex) {
-        let invert = invertHex(hex);
-        return invert;
-    }
-  }
 });
-
-
-*/
 
 
 Vue.component("color-pattern", {
@@ -462,9 +460,6 @@ Vue.component("color-pattern", {
                     return "rotate(45 0 0)"
                 }
             }
-        },
-        methods: {
-            // invr
         },
         template: 
         `
