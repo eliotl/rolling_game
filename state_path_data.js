@@ -189,3 +189,104 @@ var regions = {
     green:  ["Nebraska", "Texas", "Kansas", "New_Mexico", "Oklahoma", "Colorado", "Wyoming"],
     blue:   ["Indiana", "Michigan", "Wisconsin", "Illinois", "Iowa", "Minnesota", "South_Dakota", "North_Dakota", "Montana"],
 }
+
+
+/*
+
+
+const wheelTemplate = `
+<g id="numberWheel" style="transform: scale(0.4) translate(3200px, 300px);">
+  <g id="innerTrapezoids">
+    <path id="Inner_1" class="cls-1" d="M102,711l168.31-27.863L290,549,134,480Z"/>
+    <path id="Inner_2" class="cls-1" d="M133.5,482.173L290,551l88-102L281.989,303.191Z"/>
+    <path id="Inner_3" class="cls-1" d="M282,304l95,146,128-38V238Z"/>
+    <path id="Inner_4" class="cls-1" d="M727,304L632,450,504,412V238Z"/>
+    <path id="Inner_5" class="cls-1" d="M875.505,481.173L719,550,631,448l96.011-145.809Z"/>
+    <path id="Inner_6" class="cls-1" d="M908,711L739.69,683.137,719,548l156-68Z"/>
+  </g>
+  <g id="outerTrapezoids">
+    <path id="Outer_1" class="cls-1" d="M104,711l32-230L75,454,34.456,721.534Z"/>
+    <path id="Outer_2" class="cls-1" d="M134.882,482.447L283.1,304.852,250,252,74,455Z"/>
+    <path id="Outer_3" class="cls-1" d="M283,305l222-65V178L248,253Z"/>
+    <path id="Outer_4" class="cls-1" d="M726,305L504,240V178l257,75Z"/>
+    <path id="Outer_5" class="cls-1" d="M875.118,482.447L725,304l35-52L936,455Z"/>
+    <path id="Outer_6" class="cls-1" d="M906,711L873,481l62-27,40.544,267.534Z"/>
+  </g>
+  <g id="wheelNumbers">
+    <text id="Number_1" class="cls-2" transform="translate(196.945 624.883) scale(1.37 1.367)"><tspan x="0">1</tspan></text>
+    <text id="Number_2" class="cls-2" transform="translate(270.457 464.374) scale(1.37 1.367)"><tspan x="0">2</tspan></text>
+    <text id="Number_3" class="cls-2" transform="translate(417.629 370.356) scale(1.37 1.367)"><tspan x="0">3</tspan></text>
+    <text id="Number_4" class="cls-2" transform="matrix(1.369, -0.045, 0.045, 1.367, 595.324, 365.937)"><tspan x="0">4</tspan>  </text>
+    <text id="Number_5" class="cls-2" transform="matrix(1.369, -0.031, 0.031, 1.367, 739.68, 462.015)"><tspan x="0">5</tspan> </text>
+    <text id="Number_6" class="cls-2" transform="matrix(1.369, -0.03, 0.029, 1.367, 812.074, 619.324)"><tspan x="0">6</tspan></text>
+  </g>
+    </g>
+    `;
+
+Vue.component("number_wheel", {
+    template: `
+<g id="numberWheel" style="transform: scale(0.4) translate(3200px, 300px);">
+  <g id="innerTrapezoids">
+    <path id="Inner_1" class="cls-1" d="M102,711l168.31-27.863L290,549,134,480Z"/>
+    <path id="Inner_2" class="cls-1" d="M133.5,482.173L290,551l88-102L281.989,303.191Z"/>
+    <path id="Inner_3" class="cls-1" d="M282,304l95,146,128-38V238Z"/>
+    <path id="Inner_4" class="cls-1" d="M727,304L632,450,504,412V238Z"/>
+    <path id="Inner_5" class="cls-1" d="M875.505,481.173L719,550,631,448l96.011-145.809Z"/>
+    <path id="Inner_6" class="cls-1" d="M908,711L739.69,683.137,719,548l156-68Z"/>
+  </g>
+  <g id="outerTrapezoids">
+    <path id="Outer_1" class="cls-1" d="M104,711l32-230L75,454,34.456,721.534Z"/>
+    <path id="Outer_2" class="cls-1" d="M134.882,482.447L283.1,304.852,250,252,74,455Z"/>
+    <path id="Outer_3" class="cls-1" d="M283,305l222-65V178L248,253Z"/>
+    <path id="Outer_4" class="cls-1" d="M726,305L504,240V178l257,75Z"/>
+    <path id="Outer_5" class="cls-1" d="M875.118,482.447L725,304l35-52L936,455Z"/>
+    <path id="Outer_6" class="cls-1" d="M906,711L873,481l62-27,40.544,267.534Z"/>
+  </g>
+  <g id="wheelNumbers">
+    <text id="Number_1" class="cls-2" transform="translate(196.945 624.883) scale(1.37 1.367)"><tspan x="0">1</tspan></text>
+    <text id="Number_2" class="cls-2" transform="translate(270.457 464.374) scale(1.37 1.367)"><tspan x="0">2</tspan></text>
+    <text id="Number_3" class="cls-2" transform="translate(417.629 370.356) scale(1.37 1.367)"><tspan x="0">3</tspan></text>
+    <text id="Number_4" class="cls-2" transform="matrix(1.369, -0.045, 0.045, 1.367, 595.324, 365.937)"><tspan x="0">4</tspan>  </text>
+    <text id="Number_5" class="cls-2" transform="matrix(1.369, -0.031, 0.031, 1.367, 739.68, 462.015)"><tspan x="0">5</tspan> </text>
+    <text id="Number_6" class="cls-2" transform="matrix(1.369, -0.03, 0.029, 1.367, 812.074, 619.324)"><tspan x="0">6</tspan></text>
+  </g>
+    </g>
+    `
+    });
+
+
+// Put a v:for statement in the wheel number thing ... 
+    // Color gets passed and then you "n" through all of the numbers...
+
+Vue.component("wheel_number", {
+    template: `
+    <g :id="{{color}} + '_numberWheel_' + {{n}}" :style="'transform: scale(0.4) translate(' + {{xOffset}} + '}, ' + {{yOffset}} + 'px);'">
+        <path id="{{color}} + '_inner_' + {{n}}'" :class={{color}} :d={{innerPath}} />
+        <path id="{{color}} + '_outer_' + {{n}}'" :class={{color}} :d={{innerPath}} />
+        <text id="{{color}} + '_number_' + {{n}}'" class="wheelNumber" :x={{numberX}} :y={{numberY}}><tspan>{{number}}</tspan></text>
+    </g>
+    `
+});
+
+`
+<g v-for="color in colors" 
+wheel_number
+>
+</g>
+
+`
+
+Vue.component("wheel_number2", {
+    template: `
+    <g v-for="n in nums" :id="{{color}} + '_numberWheel_' + {{n}}" :style="'transform: scale(0.4) translate(' + {{xOffset}} + '}, ' + {{yOffset}} + 'px);'">
+        <path id="{{color}} + '_inner_' + {{n}}'" :class={{color}} :d={{innerPath}} />
+        <path id="{{color}} + '_outer_' + {{n}}'" :class={{color}} :d={{innerPath}} />
+        <text id="{{color}} + '_number_' + {{n}}'" class="wheelNumber" :x={{numberX}} :y={{numberY}}><tspan>{{number}}</tspan></text>
+    </g>
+    `
+});
+
+
+
+
+*/

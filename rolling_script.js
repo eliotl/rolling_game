@@ -154,7 +154,6 @@ Vue.component("state-shape", {
       return this.myVal.toLowerCase() === "x";
     },
     alert_style: function() {
-        // if (this.myVal.toLowerCase() === "x" || this.validNumbers.length === 0 || this.myVal.length > 1 && this.myVal[0] === "["){
         if (this.invalidNumber === true){
             return "fill:url(#" + this.state.alert_style + "_flat)";
         }
@@ -182,14 +181,6 @@ Vue.component("state-shape", {
     </g>
 `,
 });
-
-/* 
-      <g v-if="x_alert">
-      <rect v-if="state.height" :id="state.id + '_alert'" :class="state.class" :style="'url(#' + state.x_alert_class" :x="state.x" :y="state.y" :width="state.width" :height="state.height"/>
-      <path v-else :id="state.id + '_alert'" :class="state.class" :style="'url(#' + state.x_alert_class" :d="state.d"/>
-      </g>
-
-*/
 
 var statesVue = new Vue({
   el: "#state-shapes",
@@ -282,7 +273,6 @@ var statesVue = new Vue({
         let color = child.state.class;
         let options = this.get_valid_options(state);
         child.validNumbers = options;
-        // debugger;
         if (color in counters){
             for (let option of options){
                 if (option in counters[color]){
@@ -300,7 +290,6 @@ var statesVue = new Vue({
             }
         } 
       }
-      // console.log(counters);
       this.counters = counters;
     },
     fill_states: function(statesList, fill="x"){
@@ -369,48 +358,7 @@ var checksVue = new Vue({
 
 /*
 
-Vue.component("numberWheel", {
-    template: `
-<g id="numberWheel" style="transform: scale(0.4) translate(3200px, 300px);">
-  <g id="innerTrapezoids">
-    <path id="Inner_1" class="cls-1" d="M102,711l168.31-27.863L290,549,134,480Z"/>
-    <path id="Inner_2" class="cls-1" d="M133.5,482.173L290,551l88-102L281.989,303.191Z"/>
-    <path id="Inner_3" class="cls-1" d="M282,304l95,146,128-38V238Z"/>
-    <path id="Inner_4" class="cls-1" d="M727,304L632,450,504,412V238Z"/>
-    <path id="Inner_5" class="cls-1" d="M875.505,481.173L719,550,631,448l96.011-145.809Z"/>
-    <path id="Inner_6" class="cls-1" d="M908,711L739.69,683.137,719,548l156-68Z"/>
-  </g>
-  <g id="outerTrapezoids">
-    <path id="Outer_1" class="cls-1" d="M104,711l32-230L75,454,34.456,721.534Z"/>
-    <path id="Outer_2" class="cls-1" d="M134.882,482.447L283.1,304.852,250,252,74,455Z"/>
-    <path id="Outer_3" class="cls-1" d="M283,305l222-65V178L248,253Z"/>
-    <path id="Outer_4" class="cls-1" d="M726,305L504,240V178l257,75Z"/>
-    <path id="Outer_5" class="cls-1" d="M875.118,482.447L725,304l35-52L936,455Z"/>
-    <path id="Outer_6" class="cls-1" d="M906,711L873,481l62-27,40.544,267.534Z"/>
-  </g>
-  <g id="wheelNumbers">
-    <text id="Number_1" class="cls-2" transform="translate(196.945 624.883) scale(1.37 1.367)"><tspan x="0">1</tspan></text>
-    <text id="Number_2" class="cls-2" transform="translate(270.457 464.374) scale(1.37 1.367)"><tspan x="0">2</tspan></text>
-    <text id="Number_3" class="cls-2" transform="translate(417.629 370.356) scale(1.37 1.367)"><tspan x="0">3</tspan></text>
-    <text id="Number_4" class="cls-2" transform="matrix(1.369, -0.045, 0.045, 1.367, 595.324, 365.937)"><tspan x="0">4</tspan>  </text>
-    <text id="Number_5" class="cls-2" transform="matrix(1.369, -0.031, 0.031, 1.367, 739.68, 462.015)"><tspan x="0">5</tspan> </text>
-    <text id="Number_6" class="cls-2" transform="matrix(1.369, -0.03, 0.029, 1.367, 812.074, 619.324)"><tspan x="0">6</tspan></text>
-  </g>
-    </g>
-    `
-    )
-}
 
-Vue.component("wheel_number", {
-    template: `
-    <g :id="{{color}} + '_numberWheel_' + {{n}}" :style="'transform: scale(0.4) translate(' + {{xOffset}} + '}, ' + {{yOffset}} + 'px);'">
-        <path id="{{color}} + '_inner_' + {{n}}'" :class={{color}} :d={{innerPath}} />
-        <path id="{{color}} + '_outer_' + {{n}}'" :class={{color}} :d={{innerPath}} />
-        <text id="{{color}} + '_number_' + {{n}}'" class="wheelNumber" :x={{numberX}} :y={{numberY}}><tspan>{{number}}</tspan></text>
-    </g>
-    `
-    )
-}
 
 
 
@@ -418,18 +366,86 @@ Vue.component("wheel_number", {
 */
 
 
-var wheelVue = new Vue({
+
+
+
+
+
+Vue.component("number-wheel", {
+  props: ["colorobj", "color", "nums", "innerpaths", "outerpaths", "numbercoords", "angle"],
+  template: `
+  <g class="numberWheelComponent" :style="transform_style">
+    <g v-for="n in nums" :id="group_id_name(n)">
+        <path :id="inner_id_name + n" :class=inner_class_name :d=innerpaths[n-1] />
+        <path :id="outer_id_name + n" :class=outer_class_name :d=outerpaths[n-1] />
+        <text :id="number_id_name(n)" class="wheelNumber" :x=x_coord(n) :y=y_coord(n)><tspan>{{n}}</tspan></text>
+    </g>
+  </g>
+`,
+  computed: {
+    inner_id_name: function(){
+        return this.color + "_inner_";
+    },
+    outer_id_name: function(n){
+        return this.color + "_outer_";
+    },
+    transform_style: function(){
+        return `transform: scale(0.4) translate(${this.colorobj.xOffset}px, ${this.colorobj.yOffset}px) rotate(${this.colorobj.angle}deg);`
+    },
+    inner_class_name: function(){
+        return this.color + " innerTrapezoid";
+    },
+    outer_class_name: function(){
+        return this.color.slice(0,-1) + "Fill outerTrapezoid";
+    },
+  },
+  methods: {
+    group_id_name: function(n) {
+        return this.color + "_numberWheel_" + n;
+    },
+    number_id_name: function(n){
+        return this.color + "_number_" + n;
+    },
+    x_coord: function(n){
+        return this.numbercoords[n-1][0];
+    },
+    y_coord: function(n){
+        return this.numbercoords[n-1][1];
+    },
+  },
+  });  
+
+
+
+var wheelsVue = new Vue({
   el: "#numberWheels",
   data: {
     wheelColors: [
-        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color: "oranges", xOffset: 10, yOffset: 2500},
-        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color: "yellow", xOffset: 1700, yOffset: 1500},
-        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color: "purples", xOffset: 2700, yOffset: 600},
-        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color: "reds", xOffset: 2500, yOffset: 1200},
-        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color: "greens", xOffset: 1000, yOffset: 1400},
-        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color: "blues", xOffset: 3200, yOffset: 300},
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color: "oranges", xOffset: -200, yOffset: 3000, angle: -90},
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color: "yellows", xOffset: 4000, yOffset: 4200, angle: 0},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color: "purples", xOffset: 8200, yOffset: 900, angle: 90},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color: "reds", xOffset: 6400, yOffset: 2700, angle: 0},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color: "greens", xOffset: 1400, yOffset: 3800, angle: 0},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color: "blues", xOffset: 2900, yOffset: 320, angle: 0},
     ],
     innerPaths: [
+        "M 33.996 722.346 L 270.31 683.137 L 290 549 L 75.198 455.385 L 33.996 722.346 Z",
+        "M 76.112 453.599 L 290.811 547.176 L 378 449 L 248.928 253.469 L 76.112 453.599 Z",
+        "M 250.67 252.454 L 379.662 447.857 L 503.405 412.376 L 503.439 178.127 L 250.67 252.454 Z",
+        "M 761.582 251.746 L 632 450 L 505.468 412.321 L 505.446 178.156 L 761.582 251.746 Z",
+        "M 939.202 455.668 L 719 550 L 633.645 451.129 L 763.27 252.817 L 939.202 455.668 Z",
+        "M 978.366 722.348 L 739.69 683.137 L 719.905 551.839 L 940.138 457.473 L 978.366 722.348 Z",
+        ],
+    
+    outerPaths: [
+        "M 102.459 709.652 L 135.203 482.582 L 76.531 457.026 L 36.029 720.739 L 102.459 709.652 Z",
+        "M 137.31 478.966 L 283.519 307.13 L 249.291 255.107 L 78.212 453.227 L 137.31 478.966 Z",
+        "M 287.496 304.599 L 502.753 239.937 L 502.864 179.547 L 252.794 253.057 L 287.496 304.599 Z",
+        "M 725.226 304.363 L 507.024 240.142 L 506.946 179.547 L 758.837 252.959 L 725.226 304.363 Z",
+        "M 879.671 479.431 L 730.484 307.386 L 763.949 256.202 L 936.289 454.991 L 879.671 479.431 Z",
+        "M 914 709.618 L 881.241 485.165 L 939.201 460.271 L 976.309 719.815 L 914 709.618 Z",
+    ],
+    innerPaths_: [
         "M102,711l168.31-27.863L290,549,134,480Z",
         "M133.5,482.173L290,551l88-102L281.989,303.191Z",
         "M282,304l95,146,128-38V238Z",
@@ -437,16 +453,33 @@ var wheelVue = new Vue({
         "M875.505,481.173L719,550,631,448l96.011-145.809Z",
         "M908,711L739.69,683.137,719,548l156-68Z",
     ],
-    outerPaths: [
+    outerPaths_: [
         "M104,711l32-230L75,454,34.456,721.534Z",
         "M134.882,482.447L283.1,304.852,250,252,74,455Z",
         "M283,305l222-65V178L248,253Z",
         "M726,305L504,240V178l257,75Z",
         "M875.118,482.447L725,304l35-52L936,455Z",
         "M906,711L873,481l62-27,40.544,267.534Z",
-    ]
-  },
+    ],
+    numberCoords: [
+        [12.517, 105.316],
+        [114.517, -0.683],
+        [270.517, -0.683],
+        [392.517, 108.317],
+        [419.517, 264.316],
+        [-23.483, 257.317]
+    ],
+    nums: [1,2,3,4,5,6],
+  }
 });
+
+
+
+
+
+
+
+
 
 
 Vue.component("color-pattern", {
@@ -471,7 +504,7 @@ Vue.component("color-pattern", {
         `,
     });
 
-var rollsVue = new Vue({
+var patternsVue = new Vue({
   el: "#svgPatterns",
   data: {
     colorObjs: [
@@ -525,9 +558,9 @@ Vue.component("rolls-table", {
       return {
         firstRound: this.index === 0,
         laterRound: this.index >= 1,
-      }  
-    }
-  }
+      }
+    },
+  },
   });  
 
 

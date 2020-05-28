@@ -11,9 +11,9 @@
     <svg
       id="svg"
       xmlns="http://www.w3.org/2000/svg"
-      width="1000"
+      width="1200"
       height="600"
-      viewBox="0 150 3000 1750"
+      viewBox="0 150 3200 1850"
     >
     <g id="svgPatterns">
       <color-pattern
@@ -49,6 +49,16 @@
     </g>
 
     <g id="numberWheels">
+      <number-wheel
+      v-for="colorObj in wheelColors"
+      :key="colorObj.color"
+      :color="colorObj.color"
+      :colorobj="colorObj"
+      :nums="nums"
+      :innerpaths="innerPaths"
+      :outerpaths="outerPaths"
+      :numbercoords="numberCoords"
+      />
 
     </g>
 

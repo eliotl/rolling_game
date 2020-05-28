@@ -45,6 +45,34 @@ stroke-width: 8px;
   border: 2px solid #0d87d2;
 }
 
+.innerTrapezoid, .outerTrapezoid {
+  stroke-width: 2px;
+}
+
+.greenFill {
+  fill: #c1e3cb;
+}
+
+.blueFill {
+  fill: #b7e4f9;
+}
+
+.orangeFill {
+  fill: #fdc89c;
+}
+
+.yellowFill {
+  fill: #ffeda3;
+}
+
+.purpleFill {
+  fill: #c2c5e6;
+}
+
+.redFill {
+  fill: #f9c0bb;
+}
+
 rect.xBox {
   stroke: black;
   fill: white;
