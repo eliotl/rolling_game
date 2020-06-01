@@ -50,11 +50,13 @@
 
     <g id="numberWheels">
       <number-wheel
-      v-for="colorObj in wheelColors"
+      v-for="colorObj, i in wheelColors"
       :key="colorObj.color"
       :color="colorObj.color"
       :colorobj="colorObj"
       :nums="nums"
+      :i="i"
+      :statecount="colorObj.count"
       :innerpaths="innerPaths"
       :outerpaths="outerPaths"
       :numbercoords="numberCoords"

@@ -73,6 +73,10 @@ stroke-width: 8px;
   fill: #f9c0bb;
 }
 
+.wheelNumber {
+  font-size: 3em;
+}
+
 rect.xBox {
   stroke: black;
   fill: white;

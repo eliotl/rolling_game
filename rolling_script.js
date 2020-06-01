@@ -273,6 +273,9 @@ var statesVue = new Vue({
         let color = child.state.class;
         let options = this.get_valid_options(state);
         child.validNumbers = options;
+        if (child.myVal !== ""){
+            continue;
+        }
         if (color in counters){
             for (let option of options){
                 if (option in counters[color]){
@@ -291,6 +294,18 @@ var statesVue = new Vue({
         } 
       }
       this.counters = counters;
+      this.set_wheel_values();
+    },
+    set_wheel_values: function (){
+        for (let child of wheelsVue.$children){
+            let color = child.color;
+            if (! (color in this.counters)){
+                child.opacs = {};
+            }
+            else{
+                child.opacs = this.counters[color];
+            }
+        }
     },
     fill_states: function(statesList, fill="x"){
         for (let child of this.$children){
@@ -371,11 +386,11 @@ var checksVue = new Vue({
 
 
 
-Vue.component("number-wheel", {
-  props: ["colorobj", "color", "nums", "innerpaths", "outerpaths", "numbercoords", "angle"],
+const numberWheels = Vue.component("number-wheel", {
+  props: ["colorobj", "color", "nums", "innerpaths", "outerpaths", "numbercoords", "angle", "statecount"],
   template: `
   <g class="numberWheelComponent" :style="transform_style">
-    <g v-for="n in nums" :id="group_id_name(n)">
+    <g v-for="n in nums" :id="group_id_name(n)" :style="opacs_(n)" :title="title_val(n)">
         <path :id="inner_id_name + n" :class=inner_class_name :d=innerpaths[n-1] />
         <path :id="outer_id_name + n" :class=outer_class_name :d=outerpaths[n-1] />
         <text :id="number_id_name(n)" class="wheelNumber" :x=x_coord(n) :y=y_coord(n)><tspan>{{n}}</tspan></text>
@@ -386,7 +401,7 @@ Vue.component("number-wheel", {
     inner_id_name: function(){
         return this.color + "_inner_";
     },
-    outer_id_name: function(n){
+    outer_id_name: function(){
         return this.color + "_outer_";
     },
     transform_style: function(){
@@ -397,6 +412,12 @@ Vue.component("number-wheel", {
     },
     outer_class_name: function(){
         return this.color.slice(0,-1) + "Fill outerTrapezoid";
+    },
+    opacity_obj: function() {
+        if (! (this.color in statesVue.counters)){
+            return [1,1,1,1,1,1];
+        }
+        return statesVue.counters[this.color];
     },
   },
   methods: {
@@ -412,8 +433,38 @@ Vue.component("number-wheel", {
     y_coord: function(n){
         return this.numbercoords[n-1][1];
     },
+    opacs_: function(n){
+        let opacity = 0;
+        if (n in this.opacs){
+            opacity = (this.opacs[n] / this.statecount) * 1.2;
+        }
+        return `opacity: ${opacity}`;
+    },
+    title_val: function(n){
+        return `${this.opacs[n]} left of ${n} in ${this.color}`;
+    },
+    opacity_style: function(color, number){
+        if (! (color in statesVue.counters)){
+            return `opacity: ${1};`
+        }
+        let count = statesVue.counters[color][3];
+        let opacity = 8 / count;
+        return `opacity: ${opacity};`
+    }    
   },
-  });  
+  data: function () {
+    return {
+      opacs: {
+        1: 8,
+        2: 8,
+        3: 8,
+        4: 8,
+        5: 8,
+        6: 8,
+        },
+        }
+    }
+  });
 
 
 
@@ -421,12 +472,12 @@ var wheelsVue = new Vue({
   el: "#numberWheels",
   data: {
     wheelColors: [
-        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color: "oranges", xOffset: -200, yOffset: 3000, angle: -90},
-        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color: "yellows", xOffset: 4000, yOffset: 4200, angle: 0},
-        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color: "purples", xOffset: 8200, yOffset: 900, angle: 90},
-        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color: "reds", xOffset: 6400, yOffset: 2700, angle: 0},
-        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color: "greens", xOffset: 1400, yOffset: 3800, angle: 0},
-        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color: "blues", xOffset: 2900, yOffset: 320, angle: 0},
+        {fill: '#fdc89c', stroke: '#e96c34', id_: 'orangeWheel', color: "oranges", xOffset: -200, yOffset: 3000, angle: -90, count: 9},
+        {fill: '#ffeda3', stroke: '#faaf20', id_: 'yellowWheel', color: "yellows", xOffset: 4000, yOffset: 4200, angle: 0, count: 8},
+        {fill: '#c2c5e6', stroke: '#6c61a5', id_: 'purpleWheel', color: "purples", xOffset: 8200, yOffset: 900, angle: 90, count: 8},
+        {fill: '#f9c0bb', stroke: '#e54e4f', id_: 'redWheel', color: "reds", xOffset: 6400, yOffset: 2700, angle: 0, count: 9},
+        {fill: '#c1e3cb', stroke: '#04a34e', id_: 'greenWheel', color: "greens", xOffset: 1400, yOffset: 3800, angle: 0, count: 7},
+        {fill: '#b7e4f9', stroke: '#0d87d2', id_: 'blueWheel', color: "blues", xOffset: 2900, yOffset: 320, angle: 0, count: 9},
     ],
     innerPaths: [
         "M 33.996 722.346 L 270.31 683.137 L 290 549 L 75.198 455.385 L 33.996 722.346 Z",
@@ -462,12 +513,12 @@ var wheelsVue = new Vue({
         "M906,711L873,481l62-27,40.544,267.534Z",
     ],
     numberCoords: [
-        [12.517, 105.316],
-        [114.517, -0.683],
-        [270.517, -0.683],
-        [392.517, 108.317],
-        [419.517, 264.316],
-        [-23.483, 257.317]
+        [150, 620],
+        [240, 430],
+        [400, 330],
+        [580, 330],
+        [770, 430],
+        [850, 620]
     ],
     nums: [1,2,3,4,5,6],
   }
