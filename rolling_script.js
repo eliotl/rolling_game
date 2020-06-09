@@ -368,23 +368,6 @@ var checksVue = new Vue({
   }
 });
 
-// The wheel is one component ... by color
-// The trapezoid is one component ... by number
-
-/*
-
-
-
-
-
-
-*/
-
-
-
-
-
-
 
 const numberWheels = Vue.component("number-wheel", {
   props: ["colorobj", "color", "nums", "innerpaths", "outerpaths", "numbercoords", "angle", "statecount"],
@@ -575,20 +558,6 @@ var patternsVue = new Vue({
   }
 });
 
-
-/* 
-    Another component called colorBoxes or something
-
-    That just renders a little thing
-    based on what numbers are in the Counter
-        & you can hover for the full info
-
-
-        <text x="20" y="1000" font-size="4.4em" class="oranges" font-family="Helvetica"> <tspan font-weight="700"> 1 2 </tspan> <tspan font-weight="400"> 3 4 </tspan> <tspan font-weight="200"> 5 </tspan> </text>
-        <text x="600" y="1700" font-size="4.4em" class="greens"> <tspan font-weight="bold"> 1 2 3 4 5 6</tspan>   </text>
-        <text x="1200" y="400" font-size="4.4em" class="blues" font-family="Helvetica"> <tspan font-weight="700"> 1 2 </tspan> <tspan font-weight="400"> 3 4 </tspan> <tspan font-weight="200"> 5 </tspan> </text>
-        
-*/
 
 Vue.component("rolls-table", {
   props: ["round", "index"],
